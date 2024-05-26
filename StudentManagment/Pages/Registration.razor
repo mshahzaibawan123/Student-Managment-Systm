@@ -1,0 +1,234 @@
+﻿@page "/registerr"
+@inject IJSRuntime JSRuntime
+@using DataAccessLayer
+
+@inject NavigationManager Navigation
+
+
+
+@layout RegisterLayout
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Page</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Cover the entire container */
+            /
+        }
+
+        .content {
+            text-align: center;
+            z-index: 1; /* Ensure content appears above the video */
+            position: relative; /* Make sure content is positioned relative to the container */
+        }
+
+        .register-box {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+
+        .register-form input[type="text"],
+        .register-form input[type="password"],
+        .register-form input[type="email"],
+        .register-form select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .register-btn {
+            background-color: #6ab04c;
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: background-color 0.3s ease;
+        }
+
+            .register-btn:hover {
+                background-color: #4e8b36;
+            }
+
+        button {
+            align-items: center;
+            background-image: linear-gradient(144deg,#AF40FF, #5B42F3 50%,#00DDEB);
+            border: 0;
+            border-radius: 8px;
+            box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
+            box-sizing: border-box;
+            color: #FFFFFF;
+            display: flex;
+            font-family: Phantomsans, sans-serif;
+            font-size: 18px;
+            justify-content: center;
+            line-height: 1em;
+            max-width: 100%;
+            min-width: 140px;
+            padding: 3px;
+            text-decoration: none;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all .3s;
+        }
+
+            button:active,
+            button:hover {
+                outline: 0;
+            }
+
+            button span {
+                background-color: rgb(5, 6, 45);
+                padding: 16px 24px;
+                border-radius: 6px;
+                width: 100%;
+                height: 100%;
+                transition: 300ms;
+            }
+
+            button:hover span {
+                background: none;
+            }
+
+            button:active {
+                transform: scale(0.9);
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <video controls="controls" autoplay loop width="100%">
+            <source src="/video/magic-tree-in-darkness.3840x2160.mp4" type="video/mp4" />
+        </video>
+
+        <div class="content">
+            <div class="register-form">
+                <h1>Enter Registration Information</h1>
+                <form id="registrationForm">
+                    <input type="text" @bind="FirstName" placeholder="First Name" required>
+                    <input type="text" @bind="LastName" placeholder="Last Name" required>
+                    <input type="email" @bind="Email" placeholder="Email" required>
+                    <input type="text" @bind="Username" placeholder="Username" required>
+                    <input type="password" @bind="Password" placeholder="Password" required>
+                    <select @bind="UserType" required>
+                        <option value="" disabled selected>Select User Type</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Teacher">Teacher</option>
+                        <option value="Student">Student</option>
+                    </select>
+                </form>
+                <div class="btn-group">
+                    <button @onclick="SaveRegistration">
+                        <span class="text">Save</span>
+                    </button>
+
+                    <button @onclick="ClearForm">
+                        <span class="text">Clear Screen</span>
+                    </button>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @code {
+        private string FirstName { get; set; }
+        private string LastName { get; set; }
+        private string Email { get; set; }
+        private string Username { get; set; }
+        private string Password { get; set; }
+        private string UserType { get; set; }
+
+        private async Task SaveRegistration()
+        {
+            var registrationData = new ModelRegistration
+            {
+                FirstName = FirstName,
+                LastName = LastName,
+                Email = Email,
+                Username = Username,
+                Password = Password,
+                UserType = UserType,
+                RegistrationDate = DateTime.Now
+            };
+
+            try
+            {
+                await Registrationclass.SaveRegistrationInformation(registrationData);
+                ClearForm();
+                // Optionally, show a success message
+                // For example: ShowToast("Registration saved successfully!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving registration data: {ex.Message}");
+            }
+        }
+
+        private void ClearForm()
+        {
+            FirstName = string.Empty;
+            LastName = string.Empty;
+            Email = string.Empty;
+            Username = string.Empty;
+            Password = string.Empty;
+            UserType = string.Empty;
+        }
+    }
+
+
+</body>
+</html>

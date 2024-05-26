@@ -1,0 +1,214 @@
+﻿@page "/newstudent"
+@inject IJSRuntime JSRuntime
+
+@inject NavigationManager Navigation
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students Page</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <!-- Bootstrap JavaScript (optional, if you need it) -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            color: black; /* text color */
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Hide overflow content */
+        }
+
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .content {
+            text-align: center;
+            z-index: 1; /* Ensure content appears above the video */
+        }
+
+        .student-form {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+            .student-form input {
+                width: calc(100% - 20px);
+                padding: 10px;
+                margin-bottom: 10px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+                box-sizing: border-box; /* Ensure padding is included in width */
+            }
+
+        .btn-group {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+            .btn-group button {
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                padding: 10px 20px;
+                margin: 0 10px;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+                .btn-group button:hover {
+                    background-color: #0056b3;
+                }
+    </style>
+</head>
+<body>
+
+    <!-- Bootstrap Navbar -->
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <!-- Brand -->
+      
+
+        <!-- Links -->
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="contect">Contect </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="About">About</a>
+            </li>
+
+            <!-- Dropdown -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                    More option
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="studentinfo">All student info</a>
+                    
+                </div>
+            </li>
+        </ul>
+    </nav>
+    <!-- End Bootstrap Navbar -->
+
+    <div class="container">
+        <video controls="controls" autoplay loop width="100%">
+            <source src="/video/magic-tree-in-darkness.3840x2160.mp4" type="video/mp4" />
+          
+        </video>
+
+        <div class="content">
+            <div class="student-form">
+                <h1>Enter Student Information</h1>
+                <form id="studentForm">
+                    <input type="text" @bind="FirstName" placeholder="First Name" required>
+                    <input type="text" @bind="LastName" placeholder="Last Name" required>
+                    <input type="text" @bind="DateOfBirth" placeholder="Date of Birth (YYYY-MM-DD)" required>
+                    <input type="text" @bind="Gender" placeholder="Gender" required>
+                    <input type="email" @bind="Email" placeholder="Email" required>
+                    <input type="tel" @bind="Phone" placeholder="Phone (only numbers)" required>
+                    <input type="text" @bind="Address" placeholder="Address" required>
+                </form>
+                <div class="btn-group">
+                    <button @onclick="SaveData">Save</button>
+                    <button @onclick="ClearForm">Clear Screen</button>
+                    <button @onclick="AddNewStudent">Add New Student</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @code {
+        private string FirstName { get; set; }
+        private string LastName { get; set; }
+        private string DateOfBirth { get; set; }
+        private string Gender { get; set; }
+        private string Email { get; set; }
+        private string Phone { get; set; }
+        private string Address { get; set; }
+
+        private async Task SaveData()
+        {
+            // Create a ModelStudent object with the data entered in the form
+            var studentData = new ModelStudent
+            {
+                FirstName = FirstName,
+                LastName = LastName,
+                DateOfBirth = DateOfBirth,
+                Gender = Gender,
+                Email = Email,
+                Phone = Phone,
+                Address = Address
+            };
+
+            try
+            {
+                // Call the backend function to save the student data
+                StudentClass.SaveStudentInformation(studentData);
+
+                // Data saved successfully, clear form fields or show a success message
+                ClearForm();
+                // Optionally, show a success message
+                // For example: ShowToast("Student information saved successfully!");
+            }
+            catch (Exception ex)
+            {
+                // Failed to save data, handle error (show error message, log error, etc.)
+                // You may also want to display the error message to the user
+                Console.WriteLine($"Error saving student data: {ex.Message}");
+            }
+        }
+
+        private void ClearForm()
+        {
+            // Clear form fields
+            FirstName = string.Empty;
+            LastName = string.Empty;
+            DateOfBirth = string.Empty;
+            Gender = string.Empty;
+            Email = string.Empty;
+            Phone = string.Empty;
+            Address = string.Empty;
+        }
+
+        private void AddNewStudent()
+        {
+            // Navigate to student info page with query parameters
+            Navigation.NavigateTo($"/studentinfo?firstName={Uri.EscapeDataString(FirstName)}&lastName={Uri.EscapeDataString(LastName)}&dateOfBirth={Uri.EscapeDataString(DateOfBirth)}&gender={Uri.EscapeDataString(Gender)}&email={Uri.EscapeDataString(Email)}&phone={Uri.EscapeDataString(Phone)}&address={Uri.EscapeDataString(Address)}");
+        }
+    }
+
+
+</body>
+</html>
+
+
+

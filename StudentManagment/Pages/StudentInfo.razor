@@ -1,0 +1,216 @@
+﻿@page "/studentinfo"
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+        color: #333;
+    }
+
+    td {
+        background-color: #fff;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        margin: 10px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: scale(1.1);
+        }
+</style>
+
+
+<button @onclick="ShowStudentData">Show Student Data</button>
+<button @onclick="ShowTeacherData">Show Teacher Data</button>
+<button @onclick="ShowDepartmentData">Show Department Data</button>
+
+
+@if (showStudentData)
+{
+    <h3>Student Information</h3>
+    <table>
+        <tr>
+            <th>Student ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Date of Birth</th>
+            <th>Gender</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Actions</th>
+        </tr>
+        @foreach (var item in listStudents)
+        {
+            <tr>
+                <td>@item.StudentID</td>
+                <td>@item.FirstName</td>
+                <td>@item.LastName</td>
+                <td>@item.DateOfBirth</td>
+                <td>@item.Gender</td>
+                <td>@item.Email</td>
+                <td>@item.Phone</td>
+                <td>@item.Address</td>
+                <td>
+                    <button @onclick="() => DeleteStudentData(item.StudentID)">Delete</button>
+                    <!-- Add more actions if needed -->
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+@if (showTeacherData)
+{
+    <h3>Teacher Information</h3>
+    <table>
+        <tr>
+            <th>Teacher ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Department ID</th>
+            <th>Actions</th>
+        </tr>
+        @foreach (var item in listTeachers)
+        {
+            <tr>
+                <td>@item.TeacherID</td>
+                <td>@item.FirstName</td>
+                <td>@item.LastName</td>
+                <td>@item.Email</td>
+                <td>@item.Phone</td>
+                <td>@item.DepartmentID</td>
+                <td>
+                    <button @onclick="() => DeleteTeacherData(item.TeacherID)">Delete</button>
+                    <!-- Add more actions if needed -->
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+@if (showDepartmentData)
+{
+    <h3>Department Information</h3>
+    <table>
+        <tr>
+            <th>Department ID</th>
+            <th>Department Name</th>
+            <th>Actions</th>
+        </tr>
+        @foreach (var item in listDepartments)
+        {
+            <tr>
+                <td>@item.DepartmentID</td>
+                <td>@item.DepartmentName</td>
+                <td>
+                    <button @onclick="() => DeleteDepartmentData(item.DepartmentID)">Delete</button>
+                    <!-- Add more actions if needed -->
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+@code {
+    List<ModelStudent> listStudents { get; set; } = new List<ModelStudent>();
+    List<ModelTeacher> listTeachers { get; set; } = new List<ModelTeacher>();
+    List<ModelDepartment> listDepartments { get; set; } = new List<ModelDepartment>();
+    bool showStudentData = false;
+    bool showTeacherData = false;
+    bool showDepartmentData = false;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    private void LoadStudentData()
+    {
+        listStudents = StudentClass.GetAllStudents();
+    }
+
+    private void LoadTeacherData()
+    {
+        listTeachers = teacherClass.GetAllTeachers();
+    }
+
+    private void LoadDepartmentData()
+    {
+        listDepartments = Departmentclass.GetDepartmentsInfo();
+    }
+
+    private void DeleteStudentData(int id)
+    {
+        StudentClass.DeleteStudent(id);
+        LoadStudentData();
+    }
+
+    private void DeleteTeacherData(int id)
+    {
+        teacherClass.DeleteTeacher(id);
+        LoadTeacherData();
+    }
+
+    private void DeleteDepartmentData(int id)
+    {
+        // Implement department deletion logic
+    }
+
+    private void ShowStudentData()
+    {
+        showStudentData = true;
+        showTeacherData = false;
+        showDepartmentData = false;
+        LoadStudentData();
+    }
+
+    private void ShowTeacherData()
+    {
+        showTeacherData = true;
+        showStudentData = false;
+        showDepartmentData = false;
+        LoadTeacherData();
+    }
+
+    private void ShowDepartmentData()
+    {
+        showDepartmentData = true;
+        showStudentData = false;
+        showTeacherData = false;
+        LoadDepartmentData();
+    }
+}

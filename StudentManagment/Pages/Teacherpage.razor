@@ -1,0 +1,166 @@
+﻿@page "/teacherpage"
+
+@inject IJSRuntime JSRuntime
+
+@inject NavigationManager Navigation
+
+<!DOCTYPE html>
+<Html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students Page</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            color: black; /* text color */
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Hide overflow content */
+        }
+
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .content {
+            text-align: center;
+            z-index: 1; /* content appears above the video */
+        }
+
+        .student-form {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+            .student-form input {
+                width: calc(100% - 20px);
+                padding: 10px;
+                margin-bottom: 10px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+                box-sizing: border-box; /* Ensure padding is included in width */
+            }
+
+        .btn-group {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+            .btn-group button {
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                padding: 10px 20px;
+                margin: 0 10px;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+                .btn-group button:hover {
+                    background-color: #0056b3;
+                }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <video controls loop autoplay muted>
+            <source src="video/japanese-spring.3840x2160.mp4" type="video/mp4" />
+        </video>
+        <div class="content">
+            <div class="student-form">
+                <h1>Enter Teacher Information</h1>
+                <form id="teacherForm">
+                    <input type="text" @bind="FirstName" placeholder="First Name" required>
+                    <input type="text" @bind="LastName" placeholder="Last Name" required>
+                    <input type="text" @bind="Email" placeholder="Email" required>
+                    <input type="tel" @bind="Phone" placeholder="Phone (only numbers)" required>
+                    <input type="text" @bind="DepartmentID" placeholder="Department ID" required>
+                </form>
+                <div class="btn-group">
+                    <button @onclick="SaveData">Save</button>
+                    <button @onclick="ClearForm">Clear Screen</button>
+                    <button @onclick="AddNewTeacher">Add New Teacher</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @code {
+   
+    private string FirstName { get; set; }
+    private string LastName { get; set; }
+    private string Email { get; set; }
+    private string Phone { get; set; }
+    private int DepartmentID { get; set; }
+
+  
+    
+    
+    private async Task SaveData()
+    {
+        var teacherData = new ModelTeacher
+        {
+            FirstName = FirstName,
+            LastName = LastName,
+            Email = Email,
+            Phone = Phone,
+            DepartmentID = DepartmentID
+        };
+
+        try
+        {// Call the backend function to save the student data
+            await  teacherClass.SaveTeacherInformation(teacherData);
+            // Data saved successfully, clear form fields or show a success message
+            ClearForm();
+        }
+        catch (Exception ex)
+        {
+            // Display error message to the user or log the error
+            Console.WriteLine($"Error saving teacher data: {ex.Message}");
+        }
+    }
+
+
+
+    private void ClearForm()
+    {
+        FirstName = string.Empty;
+        LastName = string.Empty;
+        Email = string.Empty;
+        Phone = string.Empty;
+        DepartmentID = 0;
+    }
+
+    private void AddNewTeacher()
+    {
+        Navigation.NavigateTo($"/studentinfo?firstName={Uri.EscapeDataString(FirstName)}&lastName={Uri.EscapeDataString(LastName)}&email={Uri.EscapeDataString(Email)}&phone={Uri.EscapeDataString(Phone)}&departmentID={DepartmentID}");
+    }
+}
+</body>
+</html>
+
+
+
+
+

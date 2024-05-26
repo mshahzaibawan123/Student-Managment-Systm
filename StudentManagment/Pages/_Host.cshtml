@@ -1,0 +1,19 @@
+﻿@page "/"
+@namespace StudentManagment.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "_Layout";
+}
+
+<component type="typeof(App)" render-mode="ServerPrerendered" />
+
+<script>
+    window.attachClickEvent = function() {
+        var loginButton = document.getElementById("loginButton");
+        if (loginButton) {
+            loginButton.addEventListener("click", function() {
+                DotNet.invokeMethodAsync('YourAssemblyName', 'HandleLogin');
+            });
+        }
+    };
+</script>

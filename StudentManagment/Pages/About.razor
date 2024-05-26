@@ -1,0 +1,90 @@
+﻿@page "/About"
+
+@using Microsoft.AspNetCore.Components.Web
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Website</title>
+
+    <style>
+        /* styles.css */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        header {
+            /* Add styles for header */
+        }
+
+        nav ul {
+            /* Add styles for navigation menu */
+        }
+
+        .background-video {
+            position: relative;
+            width: 100%;
+            height: 100vh; /* Cover the entire viewport height */
+            overflow: hidden;
+        }
+
+            .background-video video {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover; /* Cover the entire container */
+            }
+
+        .content-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1;
+            color: #fff;
+        }
+
+        .quotation {
+            font-style: italic;
+            font-size: 20px;
+            color: black; /* Change text color to black */
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Video section -->
+    <section class="background-video">
+        <!-- Background video -->
+        <video controls="controls" autoplay loop width="100%">
+            <source src="/video/japanese-spring.3840x2160.mp4" type="video/mp4" />
+            <!-- Placeholder image -->
+            <img src="placeholder-image.jpg" alt="Video placeholder" width="100%" />
+        </video>
+
+        <!-- Content overlay -->
+        <div class="content-overlay">
+            <!-- Your content here -->
+            <h1>About Our School Management System</h1>
+            <p>Welcome to our School Management System, where we strive to revolutionize education by providing innovative tools and solutions for efficient school management.</p>
+            <p>Our system empowers administrators, teachers, students, and parents by streamlining administrative tasks, enhancing communication, and fostering a collaborative learning environment.</p>
+        </div>
+        <div class="quotation">
+            <p>"Happiness is not something readymade. It comes from your own actions." - Dalai Lama</p>
+        </div>
+    </section>
+
+
+
+
+    <!-- JavaScript scripts -->
+    <script src="scripts.js"></script>
+</body>
+</html>
